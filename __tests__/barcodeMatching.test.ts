@@ -26,6 +26,14 @@ describe("splitRelatedBarcodes", () => {
   it("should return empty array for falsy values", () => {
     expect(splitRelatedBarcodes()).toEqual([]);
   });
+
+  it("accepts array inputs", () => {
+    expect(splitRelatedBarcodes(["ABC123", "DEF 456"])).toEqual([
+      "abc123",
+      "def",
+      "456",
+    ]);
+  });
 });
 
 describe("getImageForBarcode", () => {

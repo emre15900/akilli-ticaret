@@ -19,8 +19,8 @@ export interface ProductProperty {
 }
 
 export interface ProductImage {
-  relatedBarcodes: string | null;
-  relatedBarcodesRaw?: string | null;
+  relatedBarcodes: string | string[] | null;
+  relatedBarcodesRaw?: string | string[] | null;
   imagePath: string;
 }
 

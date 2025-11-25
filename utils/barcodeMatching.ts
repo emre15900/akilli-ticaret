@@ -5,13 +5,21 @@ const splitRegex = /[,;|\s]+/;
 const normalize = (value?: string | null) =>
   value?.trim().toLowerCase() ?? null;
 
-export const splitRelatedBarcodes = (value?: string | null): string[] => {
-  if (!value) {
+const toStringArray = (value?: string | string[] | null) => {
+  if (Array.isArray(value)) {
+    return value.map((item) => (item == null ? "" : String(item)));
+  }
+  if (value == null) {
     return [];
   }
+  return [String(value)];
+};
 
-  return value
-    .split(splitRegex)
+export const splitRelatedBarcodes = (
+  value?: string | string[] | null,
+): string[] => {
+  return toStringArray(value)
+    .flatMap((entry) => entry.split(splitRegex))
     .map(normalize)
     .filter((item): item is string => Boolean(item));
 };
