@@ -17,7 +17,15 @@ interface FiltersPanelProps {
 }
 
 const parseNumber = (value?: string) => {
-  const numeric = Number(value);
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+  const normalized = trimmed.replace(",", ".");
+  const numeric = Number(normalized);
   return Number.isFinite(numeric) ? numeric : undefined;
 };
 
