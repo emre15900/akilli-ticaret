@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
-import { GET_PRODUCT_DETAILS } from "@/lib/graphql/queries";
+import { GET_PRODUCT_DETAILS, GET_PRODUCTS } from "@/lib/graphql/queries";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { VariantSelector } from "@/components/VariantSelector";
@@ -22,6 +22,12 @@ export default function ProductDetailPage() {
     skip: Number.isNaN(productId),
   });
   const product: Product | undefined = data?.productDetails;
+
+  const { data: fallbackImagesData } = useQuery(GET_PRODUCTS, {
+    variables: { filter: { productId } },
+    skip: Number.isNaN(productId) || Boolean(product?.productImages?.length),
+  });
+
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
     null,
   );
@@ -43,10 +49,18 @@ export default function ProductDetailPage() {
     );
   }, [product, selectedPropertyId]);
 
+  const productImages = useMemo(() => {
+    if (product?.productImages?.length) {
+      return product.productImages;
+    }
+    return (
+      fallbackImagesData?.productsByFilter?.products?.[0]?.productImages ?? []
+    );
+  }, [product, fallbackImagesData]);
+
   const heroImage = useMemo(
-    () =>
-      getImageForBarcode(product?.productImages ?? [], selectedProperty?.barcode),
-    [product, selectedProperty],
+    () => getImageForBarcode(productImages, selectedProperty?.barcode),
+    [productImages, selectedProperty],
   );
 
   if (Number.isNaN(productId)) {
@@ -85,7 +99,7 @@ export default function ProductDetailPage() {
       <div className="space-y-4">
         <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50">
           <Image
-            src={heroImage ?? product.productImages.at(0)?.imagePath ?? "/placeholder-product.svg"}
+            src={heroImage ?? productImages.at(0)?.imagePath ?? "/placeholder-product.svg"}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, 40vw"
