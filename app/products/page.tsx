@@ -23,14 +23,33 @@ export default function ProductsPage() {
   >([]);
   const handleCategoryOptions = useCallback(
     (incoming: { id: number; label: string }[]) => {
+      if (!incoming.length) {
+        return;
+      }
       setCategoryOptions((current) => {
-        if (
-          current.length === incoming.length &&
-          current.every((item, index) => item.id === incoming[index]?.id)
-        ) {
-          return current;
-        }
-        return incoming;
+        const orderAwareMap = new Map<number, string>();
+        current.forEach((item) => {
+          orderAwareMap.set(item.id, item.label);
+        });
+        incoming.forEach((item) => {
+          orderAwareMap.set(item.id, item.label);
+        });
+
+        const merged = Array.from(orderAwareMap.entries())
+          .map(([id, label]) => ({ id, label }))
+          .sort((a, b) =>
+            a.label.localeCompare(b.label, "tr", { sensitivity: "base" }),
+          );
+
+        const isSameAsCurrent =
+          merged.length === current.length &&
+          merged.every(
+            (item, index) =>
+              item.id === current[index]?.id &&
+              item.label === current[index]?.label,
+          );
+
+        return isSameAsCurrent ? current : merged;
       });
     },
     [],

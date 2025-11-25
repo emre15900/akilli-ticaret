@@ -128,6 +128,60 @@ export const ProductList = ({
 
   const listResponse = data?.productsByFilter;
   const products = listResponse?.products ?? [];
+  const normalizedSearch = search?.trim().toLowerCase() ?? "";
+  const filteredProducts = useMemo(() => {
+    if (!products.length) {
+      return products;
+    }
+
+    return products.filter((product) => {
+      const matchesSearch = normalizedSearch
+        ? [product.name, product.stockCode, product.brand?.mname]
+            .filter(Boolean)
+            .some((value) =>
+              String(value).toLowerCase().includes(normalizedSearch),
+            )
+        : true;
+
+      const matchesCategory = categoryId
+        ? product.category?.id === categoryId
+        : true;
+
+      const productPrice =
+        product.salePrice ??
+        product.price ??
+        product.productProperties?.[0]?.price ??
+        0;
+
+      const matchesMin =
+        typeof priceRange?.min === "number"
+          ? productPrice >= priceRange.min
+          : true;
+      const matchesMax =
+        typeof priceRange?.max === "number"
+          ? productPrice <= priceRange.max
+          : true;
+
+      const matchesStock = inStockOnly
+        ? (product.stock ?? 0) > 0
+        : true;
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesMin &&
+        matchesMax &&
+        matchesStock
+      );
+    });
+  }, [
+    products,
+    normalizedSearch,
+    categoryId,
+    inStockOnly,
+    priceRange?.min,
+    priceRange?.max,
+  ]);
   const hasMore = Boolean(
     mode === "infinite" && listResponse?.hasNextPage && !loading,
   );
@@ -216,14 +270,14 @@ export const ProductList = ({
     );
   }
 
-  if (!products.length) {
+  if (!loading && !filteredProducts.length) {
     return <EmptyState title="Ürün bulunamadı" />;
   }
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
