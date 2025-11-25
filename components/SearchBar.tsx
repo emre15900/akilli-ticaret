@@ -1,0 +1,41 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+
+interface SearchBarProps {
+  initialValue?: string;
+  onSearch: (value: string) => void;
+}
+
+export const SearchBar = ({
+  initialValue = "",
+  onSearch,
+}: SearchBarProps) => {
+  const [value, setValue] = useState(initialValue);
+  const debouncedValue = useDebounce(value, 300);
+
+  useEffect(() => {
+    onSearch(debouncedValue.trim());
+  }, [debouncedValue, onSearch]);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  return (
+    <div className="relative">
+      <input
+        type="search"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        placeholder="Ürün ara..."
+        className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
+      />
+      <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
+        ⌕
+      </span>
+    </div>
+  );
+};
+
