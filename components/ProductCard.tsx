@@ -9,6 +9,7 @@ import { normalizeCurrency } from "@/utils/currency";
 import { getImageForBarcode } from "@/utils/barcodeMatching";
 import {
   resolveProductPrice,
+  resolveProductPreviousPrice,
   resolveProductStock,
 } from "@/utils/productMetrics";
 
@@ -18,19 +19,30 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const price = resolveProductPrice(product);
+  const previousPrice = resolveProductPreviousPrice(product);
   const currencyCode = normalizeCurrency(product.currency);
   const stock = resolveProductStock(product);
 
-  let formattedPrice: string;
-  try {
-    formattedPrice = price.toLocaleString("tr-TR", {
-      style: "currency",
-      currency: currencyCode,
-      maximumFractionDigits: 2,
-    });
-  } catch {
-    formattedPrice = `${price.toFixed(2)} ${currencyCode}`;
-  }
+  const formatCurrency = (value: number) => {
+    try {
+      return value.toLocaleString("tr-TR", {
+        style: "currency",
+        currency: currencyCode,
+        maximumFractionDigits: 2,
+      });
+    } catch {
+      return `${value.toFixed(2)} ${currencyCode}`;
+    }
+  };
+
+  const formattedPrice = formatCurrency(price);
+  const hasDiscount = previousPrice > price;
+  const formattedPreviousPrice = hasDiscount
+    ? formatCurrency(previousPrice)
+    : null;
+  const discountRate = hasDiscount
+    ? Math.round(((previousPrice - price) / previousPrice) * 100)
+    : 0;
   const primaryProperty = product.productProperties?.[0];
   const imageUrl =
     getImageForBarcode(product.productImages, primaryProperty?.barcode) ??
@@ -73,7 +85,19 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             {stock}
           </span>
         </p>
-        <p className="text-lg font-bold text-slate-900">{formattedPrice}</p>
+        <div className="space-y-1">
+          {hasDiscount && formattedPreviousPrice && (
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-slate-400 line-through">
+                {formattedPreviousPrice}
+              </p>
+              <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold uppercase tracking-tight text-red-600">
+                %{discountRate}
+              </span>
+            </div>
+          )}
+          <p className="text-lg font-bold text-slate-900">{formattedPrice}</p>
+        </div>
         <div className="mt-auto flex items-center justify-between pt-4">
           <Link
             href={`/products/${product.id}`}

@@ -50,6 +50,34 @@ export const resolveProductPrice = (product: Product) => {
   return 0;
 };
 
+export const resolveProductPreviousPrice = (product: Product) => {
+  const candidates: number[] = [];
+
+  const pushCandidate = (value?: number | string | null) => {
+    const numeric = toNumericValue(value);
+    if (numeric !== undefined) {
+      candidates.push(numeric);
+    }
+  };
+
+  [product.oldPrice, product.oldPriceWithTax].forEach(pushCandidate);
+
+  if (!candidates.length) {
+    [product.price, product.priceWithTax].forEach(pushCandidate);
+  }
+
+  const positiveCandidates = candidates.filter((value) => value > 0);
+  if (positiveCandidates.length) {
+    return Math.max(...positiveCandidates);
+  }
+
+  if (candidates.length) {
+    return Math.max(...candidates);
+  }
+
+  return resolveProductPrice(product);
+};
+
 export const resolveProductStock = (product: Product) => {
   const directStock = toNumericValue(product.stock);
   if (directStock !== undefined) {
