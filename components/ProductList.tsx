@@ -49,7 +49,6 @@ const buildFilterInput = ({
     keyword: search?.trim() || undefined,
     minPrice: priceRange?.min ?? undefined,
     maxPrice: priceRange?.max ?? undefined,
-    stockStatus: inStockOnly ? 1 : undefined,
     categoryId: categoryId ? [categoryId] : undefined,
   };
 
