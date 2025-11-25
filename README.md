@@ -20,3 +20,9 @@ yarn dev
 
 - `utils/barcodeMatching` için barcode-görsel eşleştirme testleri
 - `store/favoritesSlice` aksiyon ve hydration senaryoları
+
+## Gerekli minimum Node.js sürümü
+
+```bash
+>= 20.19.0
+```

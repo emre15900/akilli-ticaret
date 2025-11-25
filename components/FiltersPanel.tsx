@@ -41,11 +41,17 @@ export const FiltersPanel = ({
     setMaxPrice(priceRange?.max?.toString() ?? "");
   }, [priceRange]);
 
-  const emitPriceRange = () => {
+  const emitPriceRange = ({
+    min: nextMin = minPrice,
+    max: nextMax = maxPrice,
+  }: {
+    min?: string;
+    max?: string;
+  } = {}) => {
     onChange({
       priceRange: {
-        min: parseNumber(minPrice),
-        max: parseNumber(maxPrice),
+        min: parseNumber(nextMin),
+        max: parseNumber(nextMax),
       },
     });
   };
@@ -96,7 +102,18 @@ export const FiltersPanel = ({
           placeholder="0"
           value={minPrice}
           onChange={(event) => setMinPrice(event.target.value)}
-          onBlur={emitPriceRange}
+          onBlur={(event) =>
+            emitPriceRange({ min: event.target.value, max: maxPrice })
+          }
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              emitPriceRange({
+                min: event.currentTarget.value,
+                max: maxPrice,
+              });
+            }
+          }}
           className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-normal text-slate-700 focus:border-brand focus:ring-brand/20"
         />
       </label>
@@ -109,7 +126,18 @@ export const FiltersPanel = ({
           placeholder="1000"
           value={maxPrice}
           onChange={(event) => setMaxPrice(event.target.value)}
-          onBlur={emitPriceRange}
+          onBlur={(event) =>
+            emitPriceRange({ min: minPrice, max: event.target.value })
+          }
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              emitPriceRange({
+                min: minPrice,
+                max: event.currentTarget.value,
+              });
+            }
+          }}
           className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-normal text-slate-700 focus:border-brand focus:ring-brand/20"
         />
       </label>
