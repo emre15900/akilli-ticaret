@@ -38,11 +38,16 @@ export const resolveProductPrice = (product: Product) => {
     pushCandidate(property.price);
   });
 
-  if (!candidates.length) {
-    return 0;
+  const positiveCandidates = candidates.filter((value) => value > 0);
+  if (positiveCandidates.length) {
+    return Math.min(...positiveCandidates);
   }
 
-  return Math.min(...candidates);
+  if (candidates.length) {
+    return Math.min(...candidates);
+  }
+
+  return 0;
 };
 
 export const resolveProductStock = (product: Product) => {

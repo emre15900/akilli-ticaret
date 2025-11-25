@@ -21,17 +21,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const currencyCode = normalizeCurrency(product.currency);
   const stock = resolveProductStock(product);
 
-  let formattedPrice = "Fiyat için iletişime geçin";
-  if (price > 0) {
-    try {
-      formattedPrice = price.toLocaleString("tr-TR", {
-        style: "currency",
-        currency: currencyCode,
-        maximumFractionDigits: 2,
-      });
-    } catch {
-      formattedPrice = `${price.toFixed(2)} ${currencyCode}`;
-    }
+  let formattedPrice: string;
+  try {
+    formattedPrice = price.toLocaleString("tr-TR", {
+      style: "currency",
+      currency: currencyCode,
+      maximumFractionDigits: 2,
+    });
+  } catch {
+    formattedPrice = `${price.toFixed(2)} ${currencyCode}`;
   }
   const primaryProperty = product.productProperties?.[0];
   const imageUrl =
