@@ -13,6 +13,10 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import type { Product } from "@/types/product";
 import { buildFavoriteSummary } from "@/types/product";
 import { normalizeCurrency } from "@/utils/currency";
+import {
+  normalizeNumericValue,
+  resolveProductStock,
+} from "@/utils/productMetrics";
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
@@ -62,6 +66,14 @@ export default function ProductDetailPage() {
     () => getImageForBarcode(productImages, selectedProperty?.barcode),
     [productImages, selectedProperty],
   );
+  const totalStock = useMemo(
+    () => (product ? resolveProductStock(product) : 0),
+    [product],
+  );
+  const selectedVariantStock = useMemo(
+    () => normalizeNumericValue(selectedProperty?.stock),
+    [selectedProperty],
+  );
 
   if (Number.isNaN(productId)) {
     return <ErrorState message="Geçersiz ürün kimliği." />;
@@ -93,7 +105,6 @@ export default function ProductDetailPage() {
       return `${price.toFixed(2)} ${currencyCode}`;
     }
   })();
-
   return (
     <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:grid-cols-2">
       <div className="space-y-4">
@@ -136,8 +147,14 @@ export default function ProductDetailPage() {
           <p className="text-sm text-slate-500">
             Stok:{" "}
             <span className="font-semibold text-slate-900">
-              {selectedProperty?.stock ?? product.stock ?? 0}
+              {totalStock}
             </span>
+            {selectedVariantStock !== undefined &&
+              selectedVariantStock !== totalStock && (
+                <span className="ml-2 text-xs font-medium text-slate-400">
+                  (Seçili varyant: {selectedVariantStock})
+                </span>
+              )}
           </p>
         </div>
 

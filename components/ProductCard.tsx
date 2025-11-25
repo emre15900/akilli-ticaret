@@ -6,17 +6,23 @@ import { FavoriteButton } from "./FavoriteButton";
 import type { Product } from "@/types/product";
 import { buildFavoriteSummary } from "@/types/product";
 import { normalizeCurrency } from "@/utils/currency";
+import { getImageForBarcode } from "@/utils/barcodeMatching";
+import {
+  resolveProductPrice,
+  resolveProductStock,
+} from "@/utils/productMetrics";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-  const price = product.salePrice ?? product.price;
+  const price = resolveProductPrice(product);
   const currencyCode = normalizeCurrency(product.currency);
+  const stock = resolveProductStock(product);
 
   let formattedPrice = "Fiyat için iletişime geçin";
-  if (typeof price === "number") {
+  if (price > 0) {
     try {
       formattedPrice = price.toLocaleString("tr-TR", {
         style: "currency",
@@ -27,7 +33,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       formattedPrice = `${price.toFixed(2)} ${currencyCode}`;
     }
   }
-  const imageUrl = product.productImages.at(0)?.imagePath ?? "/placeholder-product.svg";
+  const primaryProperty = product.productProperties?.[0];
+  const imageUrl =
+    getImageForBarcode(product.productImages, primaryProperty?.barcode) ??
+    product.productImages.at(0)?.imagePath ??
+    "/placeholder-product.svg";
 
   return (
     <article className="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-4 shadow-card transition hover:-translate-y-1 hover:shadow-lg">
@@ -62,7 +72,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <p className="text-sm text-slate-500">
           Stok:{" "}
           <span className="font-semibold text-slate-900">
-            {product.stock ?? 0}
+            {stock}
           </span>
         </p>
         <p className="text-lg font-bold text-slate-900">{formattedPrice}</p>

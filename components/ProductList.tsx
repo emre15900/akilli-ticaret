@@ -12,6 +12,7 @@ import type { PriceRange, Product } from "@/types/product";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useAppDispatch } from "@/store/hooks";
 import { setGlobalError } from "@/store/uiSlice";
+import { resolveProductPrice, resolveProductStock } from "@/utils/productMetrics";
 
 interface ProductListProps {
   search?: string;
@@ -59,58 +60,6 @@ const buildFilterInput = ({
   });
 
   return filter;
-};
-
-const collectNumericValue = (value?: number | null) => {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-  return undefined;
-};
-
-const resolveProductPrice = (product: Product) => {
-  const candidates: number[] = [];
-
-  [
-    product.salePrice,
-    product.price,
-    product.salePriceWithTax,
-    product.priceWithTax,
-  ].forEach((value) => {
-    const numeric = collectNumericValue(value);
-    if (numeric !== undefined) {
-      candidates.push(numeric);
-    }
-  });
-
-  product.productProperties?.forEach((property) => {
-    const numeric = collectNumericValue(property.price);
-    if (numeric !== undefined) {
-      candidates.push(numeric);
-    }
-  });
-
-  if (!candidates.length) {
-    return 0;
-  }
-
-  return Math.min(...candidates);
-};
-
-const resolveProductStock = (product: Product) => {
-  const stockValue = collectNumericValue(product.stock);
-  if (stockValue !== undefined) {
-    return stockValue;
-  }
-
-  if (product.productProperties?.length) {
-    return product.productProperties.reduce((total, property) => {
-      const propertyStock = collectNumericValue(property.stock) ?? 0;
-      return total + propertyStock;
-    }, 0);
-  }
-
-  return 0;
 };
 
 const PaginationControls = ({
