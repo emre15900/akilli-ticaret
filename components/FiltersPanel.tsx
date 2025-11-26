@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import {
   FiTag,
-  FiTrendingUp,
   FiRefreshCw,
   FiChevronDown,
   FiCheckCircle,
   FiCircle,
+  FiArrowDownCircle,
+  FiArrowUpCircle,
 } from "react-icons/fi";
 import type { PriceRange } from "@/types/product";
 
@@ -155,7 +156,7 @@ export const FiltersPanel = ({
           <label className="flex flex-col gap-2">
             Min. fiyat
             <div className="relative">
-              <FiTrendingUp className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base text-slate-400" />
+              <FiArrowDownCircle className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base text-slate-400" />
               <input
                 type="number"
                 inputMode="decimal"
@@ -182,7 +183,7 @@ export const FiltersPanel = ({
           <label className="flex flex-col gap-2">
             Maks. fiyat
             <div className="relative">
-              <FiTrendingUp className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base text-slate-400" />
+              <FiArrowUpCircle className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base text-slate-400" />
               <input
                 type="number"
                 inputMode="decimal"

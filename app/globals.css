@@ -21,4 +21,25 @@
   ::selection {
     @apply bg-brand text-white;
   }
+
+  select {
+    appearance: none;
+    background-image: none;
+  }
+
+  select::-ms-expand {
+    display: none;
+  }
+
+  select option {
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  select option:hover,
+  select option:focus,
+  select option:checked {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
 }
