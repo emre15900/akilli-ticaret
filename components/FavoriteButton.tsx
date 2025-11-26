@@ -37,8 +37,8 @@ export const FavoriteButton = ({
 
   const activePalette =
     variant === "icon"
-      ? "border-transparent bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-xl shadow-rose-200"
-      : "border-transparent bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg shadow-rose-200";
+      ? "border-transparent bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md shadow-rose-200/70 dark:shadow-rose-900/40"
+      : "border-transparent bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow dark:shadow-rose-900/40";
 
   return (
     <button
