@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -18,9 +19,28 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const themeInitScript = `
+    (function() {
+      var storageKey = 'akilli-ticaret:theme';
+      var classList = document.documentElement.classList;
+      var stored = null;
+      try {
+        stored = localStorage.getItem(storageKey);
+      } catch (err) {}
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
+      classList.remove('light','dark');
+      classList.add(theme);
+      document.documentElement.style.colorScheme = theme;
+    })();
+  `;
+
   return (
     <html lang="tr">
-      <body className={`${inter.variable} ${inter.className} bg-surface text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors`}>
+      <Script id="theme-init" strategy="beforeInteractive">
+        {themeInitScript}
+      </Script>
+      <body className={`${inter.variable} ${inter.className} bg-surface text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100`}>
         <Providers>
           <div className="min-h-screen bg-surface transition-colors dark:bg-slate-950">
             <header className="border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">

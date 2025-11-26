@@ -39,13 +39,11 @@ export default function ProductDetailPage() {
   );
 
   const selectedProperty = useMemo(() => {
-    if (!product?.productProperties?.length) {
+    if (!product?.productProperties?.length || selectedPropertyId == null) {
       return undefined;
     }
-    return (
-      product.productProperties.find(
-        (property) => property.id === selectedPropertyId,
-      ) ?? product.productProperties[0]
+    return product.productProperties.find(
+      (property) => property.id === selectedPropertyId,
     );
   }, [product, selectedPropertyId]);
 
@@ -67,11 +65,11 @@ export default function ProductDetailPage() {
     [product],
   );
   const selectedVariantStock = useMemo(() => {
-    if (selectedPropertyId === null) {
+    if (!selectedProperty) {
       return undefined;
     }
-    return normalizeNumericValue(selectedProperty?.stock);
-  }, [selectedProperty, selectedPropertyId]);
+    return normalizeNumericValue(selectedProperty.stock);
+  }, [selectedProperty]);
 
   if (Number.isNaN(productId)) {
     return <ErrorState message="Geçersiz ürün kimliği." />;

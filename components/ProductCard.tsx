@@ -103,7 +103,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <div className="mt-auto flex items-center justify-between pt-4">
           <Link
             href={`/products/${product.id}`}
-            className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+            className="rounded-full border border-white/40 bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 dark:border-white/20"
           >
             İncele
           </Link>

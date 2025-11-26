@@ -5,10 +5,10 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { SkeletonTheme } from "react-loading-skeleton";
 
 type Theme = "light" | "dark";
 
@@ -20,22 +20,21 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 const STORAGE_KEY = "akilli-ticaret:theme";
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>("light");
-  const isMounted = useRef(false);
+const getInitialTheme = (): Theme => {
+  if (typeof window === "undefined") {
+    return "light";
+  }
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  if (stored === "light" || stored === "dark") {
+    return stored;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    if (stored === "light" || stored === "dark") {
-      setTheme(stored);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-    }
-    isMounted.current = true;
-  }, []);
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -45,9 +44,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     root.classList.remove("light", "dark");
     root.classList.add(theme);
     root.style.colorScheme = theme;
-    if (isMounted.current) {
-      localStorage.setItem(STORAGE_KEY, theme);
-    }
+    localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 
   const toggleTheme = useCallback(
@@ -55,9 +52,19 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     [],
   );
 
+  const skeletonColors =
+    theme === "dark"
+      ? { baseColor: "#1f2937", highlightColor: "#374151" }
+      : { baseColor: "#e5e7eb", highlightColor: "#f3f4f6" };
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
+      <SkeletonTheme
+        baseColor={skeletonColors.baseColor}
+        highlightColor={skeletonColors.highlightColor}
+      >
+        {children}
+      </SkeletonTheme>
     </ThemeContext.Provider>
   );
 };
