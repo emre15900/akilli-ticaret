@@ -281,12 +281,20 @@ export const ProductList = ({
     return <EmptyState title="Ürün bulunamadı" />;
   }
 
+  const renderSkeletons = (count: number) =>
+    Array.from({ length: count }).map((_, index) => (
+      <SkeletonCard key={`skeleton-${index}`} />
+    ));
+
+  const isFetchingMore = networkStatus === NetworkStatus.fetchMore;
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
+        {isFetchingMore && renderSkeletons(3)}
       </div>
 
       {mode === "infinite" ? (
