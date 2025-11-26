@@ -13,6 +13,7 @@ interface FavoriteButtonProps {
   variant?: "icon" | "pill";
   className?: string;
   fullWidthOnMobile?: boolean;
+  hideLabel?: boolean;
 }
 
 export const FavoriteButton = ({
@@ -21,6 +22,7 @@ export const FavoriteButton = ({
   variant = "icon",
   className,
   fullWidthOnMobile = false,
+  hideLabel = false,
 }: FavoriteButtonProps) => {
   const dispatch = useAppDispatch();
   const isFavorite = useAppSelector(selectIsFavorite(productId));
@@ -69,13 +71,20 @@ export const FavoriteButton = ({
         );
       }}
     >
-      <span className="flex items-center justify-center gap-2 transition-transform duration-200 group-active:scale-95">
+      <span
+        className={clsx(
+          "flex items-center justify-center gap-2 transition-transform duration-200 group-active:scale-95",
+          hideLabel && "w-full",
+        )}
+      >
         {isFavorite ? (
           <FaHeart className="text-lg" />
         ) : (
           <FaRegHeart className="text-lg" />
         )}
-        {variant === "pill" ? <span className="font-semibold whitespace-nowrap">{label}</span> : null}
+        {variant === "pill" && !hideLabel ? (
+          <span className="font-semibold whitespace-nowrap">{label}</span>
+        ) : null}
       </span>
     </button>
   );

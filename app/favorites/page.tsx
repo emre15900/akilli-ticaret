@@ -77,7 +77,8 @@ export default function FavoritesPage() {
                 <FavoriteButton
                   productId={favorite.id}
                   summary={favorite}
-                  className="shrink-0 max-sm:w-full max-sm:justify-center"
+                  variant="icon"
+                  hideLabel
                 />
               </div>
               <p className="text-lg font-bold text-slate-900 dark:text-slate-100">

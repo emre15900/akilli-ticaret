@@ -77,9 +77,9 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:grid-cols-2">
+      <section className="card-surface grid gap-8 rounded-2xl border border-slate-200 p-6 shadow-sm lg:grid-cols-2">
         <div className="space-y-4">
-          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50">
+          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-surface-dynamic">
             <Skeleton height="100%" />
           </div>
           <Skeleton height={48} width="60%" borderRadius="999px" />
@@ -91,14 +91,14 @@ export default function ProductDetailPage() {
             <Skeleton height={32} width="80%" />
             <Skeleton height={18} width="40%" />
           </div>
-          <div className="rounded-2xl bg-slate-50 p-4">
+          <div className="rounded-2xl bg-surface-dynamic p-4">
             <Skeleton height={16} width="20%" />
             <div className="mt-3 space-y-2">
               <Skeleton height={34} width="50%" />
               <Skeleton height={18} width="35%" />
             </div>
           </div>
-          <div className="rounded-2xl border border-slate-100 p-4">
+          <div className="rounded-2xl border border-slate-100 p-4 dark:border-slate-800">
             <Skeleton height={16} width="30%" />
             <div className="mt-3 space-y-2">
               <Skeleton height={16} width="60%" />
@@ -139,9 +139,9 @@ export default function ProductDetailPage() {
     }
   })();
   return (
-    <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-2" suppressHydrationWarning>
+    <section className="card-surface grid gap-8 rounded-2xl border border-slate-200 p-6 shadow-sm transition-colors dark:border-slate-800 lg:grid-cols-2">
       <div className="space-y-4">
-        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-800">
+        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-surface-dynamic">
           {heroImage ? (
             <Image
               src={heroImage}
@@ -178,10 +178,11 @@ export default function ProductDetailPage() {
             summary={buildFavoriteSummary(product)}
             variant="pill"
             fullWidthOnMobile
+            hideLabel
           />
         </div>
 
-        <div className="space-y-2 rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
+        <div className="space-y-2 rounded-2xl bg-surface-dynamic p-4">
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fiyat</p>
           <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{formattedPrice}</p>
           <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -198,7 +199,7 @@ export default function ProductDetailPage() {
           </p>
         </div>
 
-        <div className="space-y-2 rounded-2xl border border-slate-100 p-4 dark:border-slate-800">
+        <div className="space-y-2 rounded-2xl border border-slate-100 bg-surface-dynamic p-4 dark:border-slate-800">
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-100">Seçili varyant</p>
           <ul className="text-sm text-slate-600 dark:text-slate-200">
             {selectedProperty?.variantValues?.map((value) => (

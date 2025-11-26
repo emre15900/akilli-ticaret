@@ -7,6 +7,15 @@
 
 :root {
   color-scheme: light;
+  --surface-bg: #f8fafc;
+  --card-bg: #ffffff;
+  --card-text: #0f172a;
+}
+
+html.dark {
+  --surface-bg: #050914;
+  --card-bg: #0f172a;
+  --card-text: #f8fafc;
 }
 
 @layer base {
@@ -16,6 +25,29 @@
 
   body {
     @apply bg-surface text-slate-900 antialiased transition-colors dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-bg: #050914;
+      --card-bg: #0f172a;
+      --card-text: #f8fafc;
+    }
+  }
+
+  .card-surface {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .bg-surface-dynamic {
+    background-color: var(--surface-bg);
+    transition: background-color 0.2s ease;
+  }
+
+  .card-text {
+    color: var(--card-text);
   }
 
   ::selection {
