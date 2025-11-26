@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
 import { useQuery } from "@apollo/client/react";
 import { GET_PRODUCT_DETAILS, GET_PRODUCTS } from "@/lib/graphql/queries";
 import { LoadingState } from "@/components/ui/LoadingState";
@@ -80,7 +81,21 @@ export default function ProductDetailPage() {
   }
 
   if (loading) {
-    return <LoadingState message="Ürün bilgileri yükleniyor..." />;
+    return (
+      <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:grid-cols-2">
+        <div className="space-y-4">
+          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50">
+            <Skeleton height="100%" />
+          </div>
+          <Skeleton height={60} borderRadius="1rem" />
+        </div>
+        <div className="space-y-6">
+          <Skeleton height={32} width="70%" />
+          <Skeleton height={120} />
+          <Skeleton height={100} />
+        </div>
+      </section>
+    );
   }
 
   if (error || !product) {

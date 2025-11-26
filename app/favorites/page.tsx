@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Skeleton from "react-loading-skeleton";
 import { useAppSelector } from "@/store/hooks";
 import { selectFavoriteSummaries } from "@/store/favoritesSlice";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -13,10 +14,29 @@ export default function FavoritesPage() {
 
   if (!favorites.length) {
     return (
-      <EmptyState
-        title="Favori listen boş"
-        description="Ürünleri favoriye ekleyerek burada hızlıca erişebilirsin."
-      />
+      <section className="space-y-4">
+        <h1 className="text-2xl font-bold text-slate-900">Favori Ürünler</h1>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <article
+              key={`favorite-skeleton-${index}`}
+              className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            >
+              <Skeleton height={112} width={112} borderRadius={16} />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton height={14} width="30%" />
+                <Skeleton height={20} width="90%" />
+                <Skeleton height={20} width="60%" />
+                <Skeleton height={16} width="50%" />
+              </div>
+            </article>
+          ))}
+        </div>
+        <EmptyState
+          title="Favori listen boş"
+          description="Ürünleri favoriye ekleyerek burada hızlıca erişebilirsin."
+        />
+      </section>
     );
   }
 
@@ -49,6 +69,7 @@ export default function FavoritesPage() {
                   <Link
                     href={`/products/${favorite.id}`}
                     className="line-clamp-2 text-base font-semibold text-slate-900"
+                    title={favorite.name}
                   >
                     {favorite.name}
                   </Link>

@@ -11,12 +11,14 @@ interface FavoriteButtonProps {
   productId: number;
   summary: FavoriteProductSummary;
   variant?: "icon" | "pill";
+  className?: string;
 }
 
 export const FavoriteButton = ({
   productId,
   summary,
   variant = "icon",
+  className,
 }: FavoriteButtonProps) => {
   const dispatch = useAppDispatch();
   const isFavorite = useAppSelector(selectIsFavorite(productId));
@@ -48,6 +50,7 @@ export const FavoriteButton = ({
         "group relative overflow-hidden rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rose-500",
         variantClasses,
         isFavorite ? activePalette : idlePalette,
+        className,
       )}
       onClick={() => {
         dispatch(toggleFavorite(summary));

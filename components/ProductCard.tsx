@@ -62,14 +62,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         />
       </Link>
       <div className="flex flex-1 flex-col gap-2">
-        <div className="flex items-start justify-between gap-2">
-          <div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <p className="text-xs uppercase tracking-wide text-slate-400">
               {product.brand?.mname ?? "Marka"}
             </p>
             <Link
               href={`/products/${product.id}`}
               className="line-clamp-2 text-base font-semibold text-slate-900"
+              title={product.name}
             >
               {product.name}
             </Link>
@@ -77,6 +78,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <FavoriteButton
             productId={product.id}
             summary={buildFavoriteSummary(product)}
+            className="shrink-0"
           />
         </div>
         <p className="text-sm text-slate-500">
