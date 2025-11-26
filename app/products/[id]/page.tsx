@@ -87,12 +87,30 @@ export default function ProductDetailPage() {
           <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50">
             <Skeleton height="100%" />
           </div>
-          <Skeleton height={60} borderRadius="1rem" />
+          <Skeleton height={48} width="60%" borderRadius="999px" />
+          <Skeleton height={70} borderRadius="1rem" />
         </div>
         <div className="space-y-6">
-          <Skeleton height={32} width="70%" />
-          <Skeleton height={120} />
-          <Skeleton height={100} />
+          <div className="space-y-3">
+            <Skeleton height={16} width="25%" />
+            <Skeleton height={32} width="80%" />
+            <Skeleton height={18} width="40%" />
+          </div>
+          <div className="rounded-2xl bg-slate-50 p-4">
+            <Skeleton height={16} width="20%" />
+            <div className="mt-3 space-y-2">
+              <Skeleton height={34} width="50%" />
+              <Skeleton height={18} width="35%" />
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-100 p-4">
+            <Skeleton height={16} width="30%" />
+            <div className="mt-3 space-y-2">
+              <Skeleton height={16} width="60%" />
+              <Skeleton height={16} width="45%" />
+              <Skeleton height={16} width="70%" />
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -124,14 +142,18 @@ export default function ProductDetailPage() {
     <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:grid-cols-2">
       <div className="space-y-4">
         <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50">
-          <Image
-            src={heroImage ?? productImages.at(0)?.imagePath ?? "/placeholder-product.svg"}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 40vw"
-            className="object-cover object-center"
-            priority
-          />
+          {heroImage ? (
+            <Image
+              src={heroImage}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 40vw"
+              className="object-cover object-center"
+              priority
+            />
+          ) : (
+            <Skeleton height="100%" />
+          )}
         </div>
         <VariantSelector
           properties={product.productProperties}

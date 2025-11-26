@@ -70,7 +70,7 @@ export const FavoriteButton = ({
         ) : (
           <FaRegHeart className="text-lg" />
         )}
-        {variant === "pill" ? <span className="font-semibold">{label}</span> : null}
+        {variant === "pill" ? <span className="font-semibold whitespace-nowrap">{label}</span> : null}
       </span>
     </button>
   );
