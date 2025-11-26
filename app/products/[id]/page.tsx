@@ -11,7 +11,7 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { VariantSelector } from "@/components/VariantSelector";
 import { getImageForBarcode } from "@/utils/barcodeMatching";
 import { FavoriteButton } from "@/components/FavoriteButton";
-import type { Product } from "@/types/product";
+import type { Product, ProductListResponse } from "@/types/product";
 import { buildFavoriteSummary } from "@/types/product";
 import { normalizeCurrency } from "@/utils/currency";
 import {
@@ -23,13 +23,19 @@ import {
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const productId = Number(params.id);
-  const { data, loading, error, refetch } = useQuery(GET_PRODUCT_DETAILS, {
+  const { data, loading, error, refetch } = useQuery<
+    { productDetails: Product },
+    { productId: number }
+  >(GET_PRODUCT_DETAILS, {
     variables: { productId },
     skip: Number.isNaN(productId),
   });
   const product: Product | undefined = data?.productDetails;
 
-  const { data: fallbackImagesData } = useQuery(GET_PRODUCTS, {
+  const { data: fallbackImagesData } = useQuery<
+    { productsByFilter: ProductListResponse },
+    { filter: { productId: number } }
+  >(GET_PRODUCTS, {
     variables: { filter: { productId } },
     skip: Number.isNaN(productId) || Boolean(product?.productImages?.length),
   });
