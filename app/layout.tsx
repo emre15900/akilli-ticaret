@@ -37,9 +37,11 @@ export default function RootLayout({
 
   return (
     <html lang="tr">
-      <Script id="theme-init" strategy="beforeInteractive">
-        {themeInitScript}
-      </Script>
+      <head>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeInitScript}
+        </Script>
+      </head>
       <body className={`${inter.variable} ${inter.className} bg-surface text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100`}>
         <Providers>
           <div className="min-h-screen bg-surface transition-colors dark:bg-slate-950">

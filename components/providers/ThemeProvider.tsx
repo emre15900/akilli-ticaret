@@ -20,24 +20,27 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 const STORAGE_KEY = "akilli-ticaret:theme";
 
-const getInitialTheme = (): Theme => {
-  if (typeof window === "undefined") {
-    return "light";
-  }
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  if (stored === "light" || stored === "dark") {
-    return stored;
-  }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-};
-
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [theme, setTheme] = useState<Theme>("light");
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     if (typeof document === "undefined") {
+      return;
+    }
+    const root = document.documentElement;
+    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme: Theme = stored ?? (prefersDark ? "dark" : "light");
+    root.classList.remove("light", "dark");
+    root.classList.add(initialTheme);
+    root.style.colorScheme = initialTheme;
+    setTheme(initialTheme);
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isReady || typeof document === "undefined") {
       return;
     }
     const root = document.documentElement;
@@ -45,7 +48,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     root.classList.add(theme);
     root.style.colorScheme = theme;
     localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
+  }, [theme, isReady]);
 
   const toggleTheme = useCallback(
     () => setTheme((prev) => (prev === "light" ? "dark" : "light")),
