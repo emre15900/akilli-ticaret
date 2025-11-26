@@ -12,6 +12,7 @@ interface FavoriteButtonProps {
   summary: FavoriteProductSummary;
   variant?: "icon" | "pill";
   className?: string;
+  fullWidthOnMobile?: boolean;
 }
 
 export const FavoriteButton = ({
@@ -19,6 +20,7 @@ export const FavoriteButton = ({
   summary,
   variant = "icon",
   className,
+  fullWidthOnMobile = false,
 }: FavoriteButtonProps) => {
   const dispatch = useAppDispatch();
   const isFavorite = useAppSelector(selectIsFavorite(productId));
@@ -51,6 +53,7 @@ export const FavoriteButton = ({
         variantClasses,
         isFavorite ? activePalette : idlePalette,
         className,
+        fullWidthOnMobile && "w-full justify-center",
       )}
       onClick={() => {
         dispatch(toggleFavorite(summary));

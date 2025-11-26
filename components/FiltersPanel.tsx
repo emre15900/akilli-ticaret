@@ -90,32 +90,10 @@ export const FiltersPanel = ({
     emitPriceRange({ min: debouncedMinPrice, max: debouncedMaxPrice });
   }, [debouncedMinPrice, debouncedMaxPrice, emitPriceRange]);
 
-  return (
-    <section className="rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-white to-slate-50 p-5 shadow-lg shadow-slate-100 transition-colors dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 dark:shadow-slate-900/40">
-      <div className="flex flex-col gap-3 pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-            Akıllı filtreler
-          </p>
-          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-            Aradığın ürünü hızla bul
-          </h3>
-        </div>
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-white"
-          onClick={() => {
-            setMinPrice("");
-            setMaxPrice("");
-            onReset?.();
-          }}
-        >
-          <FiRefreshCw />
-          Filtreleri temizle
-        </button>
-      </div>
+  const [isAccordionOpen, setAccordionOpen] = useState(false);
 
-      <div className="grid gap-4 md:grid-cols-4">
+  const FilterContent = (
+    <div className="grid gap-4 md:grid-cols-4">
         <label className="col-span-2 flex flex-col gap-2 text-sm font-semibold text-slate-700 md:col-span-1">
           Kategori
           <div className="relative">
@@ -198,6 +176,60 @@ export const FiltersPanel = ({
               />
             </div>
           </label>
+        </div>
+    </div>
+  );
+
+  return (
+    <section className="rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-white to-slate-50 p-5 shadow-lg shadow-slate-100 transition-colors dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 dark:shadow-slate-900/40">
+      <div className="flex flex-col gap-3 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+            Akıllı filtreler
+          </p>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+            Aradığın ürünü hızla bul
+          </h3>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-white md:hidden"
+            onClick={() => setAccordionOpen((prev) => !prev)}
+          >
+            <FiChevronDown
+              className={clsx(
+                "transition-transform",
+                isAccordionOpen ? "rotate-180" : "rotate-0",
+              )}
+            />
+            Filtreleri {isAccordionOpen ? "gizle" : "göster"}
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-white"
+            onClick={() => {
+              setMinPrice("");
+              setMaxPrice("");
+              onReset?.();
+            }}
+          >
+            <FiRefreshCw />
+            Filtreleri temizle
+          </button>
+        </div>
+      </div>
+
+      <div className="md:block">
+        <div
+          className={clsx(
+            "md:!block",
+            isAccordionOpen
+              ? "max-h-[1200px] space-y-4 overflow-hidden transition-[max-height] duration-500 ease-out md:max-h-none"
+              : "max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in md:max-h-none",
+          )}
+        >
+          {FilterContent}
         </div>
       </div>
     </section>

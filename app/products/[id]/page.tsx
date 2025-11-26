@@ -139,7 +139,7 @@ export default function ProductDetailPage() {
     }
   })();
   return (
-    <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-2">
+    <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-2" suppressHydrationWarning>
       <div className="space-y-4">
         <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-800">
           {heroImage ? (
@@ -177,6 +177,7 @@ export default function ProductDetailPage() {
             productId={product.id}
             summary={buildFavoriteSummary(product)}
             variant="pill"
+            fullWidthOnMobile
           />
         </div>
 

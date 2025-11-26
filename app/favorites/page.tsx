@@ -61,8 +61,8 @@ export default function FavoritesPage() {
               />
             </div>
             <div className="flex flex-1 flex-col gap-2">
-              <div className="flex items-start justify-between gap-2">
-                <div>
+              <div className="flex flex-wrap items-start gap-2">
+                <div className="min-w-0 flex-1">
                   <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                     {favorite.brandName ?? "Marka"}
                   </p>
@@ -74,7 +74,11 @@ export default function FavoritesPage() {
                     {favorite.name}
                   </Link>
                 </div>
-                <FavoriteButton productId={favorite.id} summary={favorite} />
+                <FavoriteButton
+                  productId={favorite.id}
+                  summary={favorite}
+                  className="shrink-0 max-sm:w-full max-sm:justify-center"
+                />
               </div>
               <p className="text-lg font-bold text-slate-900 dark:text-slate-100">
                 {(() => {
