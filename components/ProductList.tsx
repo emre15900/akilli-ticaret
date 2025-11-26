@@ -8,7 +8,7 @@ import { SkeletonCard } from "./ui/SkeletonCard";
 import { ErrorState } from "./ui/ErrorState";
 import { EmptyState } from "./ui/EmptyState";
 import { GET_PRODUCTS } from "@/lib/graphql/queries";
-import type { PriceRange, Product } from "@/types/product";
+import type { PriceRange, Product, ProductListResponse } from "@/types/product";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useAppDispatch } from "@/store/hooks";
 import { setGlobalError } from "@/store/uiSlice";
@@ -127,16 +127,17 @@ export const ProductList = ({
     [search, categoryId, inStockOnly, priceRange, mode, page, pageSize],
   );
 
-  const { data, loading, error, fetchMore, refetch, networkStatus } = useQuery(
-    GET_PRODUCTS,
-    {
-      variables: { filter: filterInput },
-      notifyOnNetworkStatusChange: true,
-    },
-  );
+  const { data, loading, error, fetchMore, refetch, networkStatus } =
+    useQuery<{ productsByFilter: ProductListResponse }, { filter: ReturnType<typeof buildFilterInput> }>(
+      GET_PRODUCTS,
+      {
+        variables: { filter: filterInput },
+        notifyOnNetworkStatusChange: true,
+      },
+    );
 
   const listResponse = data?.productsByFilter;
-  const products = useMemo(
+  const products = useMemo<Product[]>(
     () => listResponse?.products ?? [],
     [listResponse?.products],
   );
@@ -146,7 +147,7 @@ export const ProductList = ({
       return products;
     }
 
-    return products.filter((product) => {
+    return products.filter((product: Product) => {
       const matchesSearch = normalizedSearch
         ? [product.name, product.stockCode, product.brand?.mname]
             .filter(Boolean)
