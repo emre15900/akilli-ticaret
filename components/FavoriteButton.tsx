@@ -1,6 +1,8 @@
 "use client";
 
 import clsx from "clsx";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { toast } from "react-toastify";
 import type { FavoriteProductSummary } from "@/types/product";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectIsFavorite, toggleFavorite } from "@/store/favoritesSlice";
@@ -10,25 +12,6 @@ interface FavoriteButtonProps {
   summary: FavoriteProductSummary;
   variant?: "icon" | "pill";
 }
-
-const HeartIcon = ({ filled }: { filled: boolean }) => (
-  <svg
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-    className={clsx(
-      "size-4 transition-transform duration-200",
-      filled ? "scale-110" : "scale-100",
-    )}
-  >
-    <path
-      d="M12 21s-7.2-4.35-9.6-9.22c-1.28-2.67-.09-6 2.88-6.69a4.2 4.2 0 0 1 4.35 1.77c1.65-2.4 5.58-2.4 7.23 0a4.2 4.2 0 0 1 4.35-1.77c2.97.69 4.16 4.02 2.88 6.69C19.2 16.65 12 21 12 21Z"
-      className={filled ? "fill-current" : "fill-transparent stroke-current"}
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
 
 export const FavoriteButton = ({
   productId,
@@ -66,10 +49,24 @@ export const FavoriteButton = ({
         variantClasses,
         isFavorite ? activePalette : idlePalette,
       )}
-      onClick={() => dispatch(toggleFavorite(summary))}
+      onClick={() => {
+        dispatch(toggleFavorite(summary));
+        toast[isFavorite ? "info" : "success"](
+          isFavorite ? "Favorilerden çıkarıldı" : "Favorilere eklendi",
+          {
+            position: "top-right",
+            hideProgressBar: false,
+            pauseOnHover: true,
+          },
+        );
+      }}
     >
       <span className="flex items-center justify-center gap-2 transition-transform duration-200 group-active:scale-95">
-        <HeartIcon filled={isFavorite} />
+        {isFavorite ? (
+          <FaHeart className="text-lg" />
+        ) : (
+          <FaRegHeart className="text-lg" />
+        )}
         {variant === "pill" ? <span className="font-semibold">{label}</span> : null}
       </span>
     </button>

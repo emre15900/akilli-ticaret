@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FiSearch } from "react-icons/fi";
 import { useDebounce } from "@/hooks/useDebounce";
 
 interface SearchBarProps {
@@ -32,9 +33,7 @@ export const SearchBar = ({
         placeholder="Ürün ara..."
         className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
       />
-      <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
-        ⌕
-      </span>
+      <FiSearch className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
     </div>
   );
 };
