@@ -127,7 +127,10 @@ export const ProductList = ({
   );
 
   const listResponse = data?.productsByFilter;
-  const products = listResponse?.products ?? [];
+  const products = useMemo(
+    () => listResponse?.products ?? [],
+    [listResponse?.products],
+  );
   const normalizedSearch = search?.trim().toLowerCase() ?? "";
   const filteredProducts = useMemo(() => {
     if (!products.length) {
@@ -219,12 +222,11 @@ export const ProductList = ({
   });
 
   useEffect(() => {
-    const currentProducts = listResponse?.products ?? [];
-    if (!onCategoriesChange || !currentProducts.length) {
+    if (!onCategoriesChange || !products.length) {
       return;
     }
     const uniqueMap = new Map<number, string>();
-    currentProducts.forEach((product: Product) => {
+    products.forEach((product: Product) => {
       if (product.category?.id && product.category?.categoryName) {
         uniqueMap.set(product.category.id, product.category.categoryName);
       }
@@ -236,7 +238,7 @@ export const ProductList = ({
         label,
       })),
     );
-  }, [listResponse?.products, onCategoriesChange]);
+  }, [products, onCategoriesChange]);
 
   useEffect(() => {
     if (error) {
