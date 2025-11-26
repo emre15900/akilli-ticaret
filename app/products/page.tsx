@@ -94,6 +94,9 @@ export default function ProductsPage() {
     });
   };
 
+  const formatNumberParam = (value?: number) =>
+    value === undefined || value === null ? null : String(value);
+
   const handleFiltersChange = (payload: {
     categoryId?: number;
     inStockOnly?: boolean;
@@ -114,8 +117,8 @@ export default function ProductsPage() {
       category:
         typeof nextCategory === "number" ? String(nextCategory) : null,
       inStock: nextInStock ? "true" : null,
-      min: nextPriceRange?.min ? String(nextPriceRange.min) : null,
-      max: nextPriceRange?.max ? String(nextPriceRange.max) : null,
+      min: formatNumberParam(nextPriceRange?.min),
+      max: formatNumberParam(nextPriceRange?.max),
       page: "1",
     });
   };
@@ -126,6 +129,7 @@ export default function ProductsPage() {
       inStock: null,
       min: null,
       max: null,
+      q: null,
       page: "1",
     });
   };

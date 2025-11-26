@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import {
   FiTag,
@@ -12,6 +12,7 @@ import {
   FiArrowUpCircle,
 } from "react-icons/fi";
 import type { PriceRange } from "@/types/product";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface FiltersPanelProps {
   categories: { id: number; label: string }[];
@@ -54,25 +55,40 @@ export const FiltersPanel = ({
     priceRange?.max?.toString() ?? "",
   );
 
+  const debouncedMinPrice = useDebounce(minPrice, 300);
+  const debouncedMaxPrice = useDebounce(maxPrice, 300);
+  const isFirstDebounceRun = useRef(true);
+
   useEffect(() => {
     setMinPrice(priceRange?.min?.toString() ?? "");
     setMaxPrice(priceRange?.max?.toString() ?? "");
   }, [priceRange]);
 
-  const emitPriceRange = ({
-    min: nextMin = minPrice,
-    max: nextMax = maxPrice,
-  }: {
-    min?: string;
-    max?: string;
-  } = {}) => {
-    onChange({
-      priceRange: {
-        min: parseNumber(nextMin),
-        max: parseNumber(nextMax),
-      },
-    });
-  };
+  const emitPriceRange = useCallback(
+    ({
+      min: nextMin = minPrice,
+      max: nextMax = maxPrice,
+    }: {
+      min?: string;
+      max?: string;
+    } = {}) => {
+      onChange({
+        priceRange: {
+          min: parseNumber(nextMin),
+          max: parseNumber(nextMax),
+        },
+      });
+    },
+    [minPrice, maxPrice, onChange],
+  );
+
+  useEffect(() => {
+    if (isFirstDebounceRun.current) {
+      isFirstDebounceRun.current = false;
+      return;
+    }
+    emitPriceRange({ min: debouncedMinPrice, max: debouncedMaxPrice });
+  }, [debouncedMinPrice, debouncedMaxPrice, emitPriceRange]);
 
   return (
     <section className="rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-white to-slate-50 p-5 shadow-lg shadow-slate-100">
@@ -163,18 +179,6 @@ export const FiltersPanel = ({
                 placeholder="0"
                 value={minPrice}
                 onChange={(event) => setMinPrice(event.target.value)}
-                onBlur={(event) =>
-                  emitPriceRange({ min: event.target.value, max: maxPrice })
-                }
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    emitPriceRange({
-                      min: event.currentTarget.value,
-                      max: maxPrice,
-                    });
-                  }
-                }}
                 className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
             </div>
@@ -190,18 +194,6 @@ export const FiltersPanel = ({
                 placeholder="1000"
                 value={maxPrice}
                 onChange={(event) => setMaxPrice(event.target.value)}
-                onBlur={(event) =>
-                  emitPriceRange({ min: minPrice, max: event.target.value })
-                }
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    emitPriceRange({
-                      min: minPrice,
-                      max: event.currentTarget.value,
-                    });
-                  }
-                }}
                 className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
             </div>

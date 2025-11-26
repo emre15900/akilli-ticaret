@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
@@ -16,6 +16,7 @@ import { buildFavoriteSummary } from "@/types/product";
 import { normalizeCurrency } from "@/utils/currency";
 import {
   normalizeNumericValue,
+  resolveProductPrice,
   resolveProductStock,
 } from "@/utils/productMetrics";
 
@@ -36,12 +37,6 @@ export default function ProductDetailPage() {
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
     null,
   );
-
-  useEffect(() => {
-    if (product?.productProperties?.length) {
-      setSelectedPropertyId(product.productProperties[0]?.id ?? null);
-    }
-  }, [product]);
 
   const selectedProperty = useMemo(() => {
     if (!product?.productProperties?.length) {
@@ -71,10 +66,12 @@ export default function ProductDetailPage() {
     () => (product ? resolveProductStock(product) : 0),
     [product],
   );
-  const selectedVariantStock = useMemo(
-    () => normalizeNumericValue(selectedProperty?.stock),
-    [selectedProperty],
-  );
+  const selectedVariantStock = useMemo(() => {
+    if (selectedPropertyId === null) {
+      return undefined;
+    }
+    return normalizeNumericValue(selectedProperty?.stock);
+  }, [selectedProperty, selectedPropertyId]);
 
   if (Number.isNaN(productId)) {
     return <ErrorState message="Geçersiz ürün kimliği." />;
@@ -125,8 +122,13 @@ export default function ProductDetailPage() {
     );
   }
 
+  const basePrice = resolveProductPrice(product);
+  const variantPrice =
+    selectedPropertyId !== null
+      ? normalizeNumericValue(selectedProperty?.price)
+      : undefined;
   const price =
-    selectedProperty?.price ?? product.salePrice ?? product.price ?? 0;
+    variantPrice && variantPrice > 0 ? variantPrice : basePrice;
   const currencyCode = normalizeCurrency(product.currency);
   const formattedPrice = (() => {
     try {
@@ -157,7 +159,9 @@ export default function ProductDetailPage() {
         </div>
         <VariantSelector
           properties={product.productProperties}
-          selectedBarcode={selectedProperty?.barcode}
+          selectedBarcode={
+            selectedPropertyId ? selectedProperty?.barcode ?? undefined : undefined
+          }
           onSelect={(property) => setSelectedPropertyId(property.id)}
         />
       </div>

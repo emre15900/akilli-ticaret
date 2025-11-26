@@ -55,7 +55,9 @@ export const FavoriteButton = ({
       onClick={() => {
         dispatch(toggleFavorite(summary));
         toast[isFavorite ? "info" : "success"](
-          isFavorite ? "Favorilerden çıkarıldı" : "Favorilere eklendi",
+          isFavorite
+            ? `"${summary.name}" favorilerden çıkarıldı`
+            : `"${summary.name}" favorilere eklendi`,
           {
             position: "top-right",
             hideProgressBar: false,

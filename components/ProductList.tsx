@@ -47,10 +47,19 @@ const buildFilterInput = ({
     pageNumber: page ?? 1,
     pageSize: pageSize ?? PAGE_SIZE,
     keyword: search?.trim() || undefined,
-    minPrice: priceRange?.min ?? undefined,
-    maxPrice: priceRange?.max ?? undefined,
-    categoryId: categoryId ? [categoryId] : undefined,
   };
+
+  if (priceRange?.min !== undefined && priceRange.min !== null) {
+    filter.minPrice = priceRange.min;
+  }
+
+  if (priceRange?.max !== undefined && priceRange.max !== null) {
+    filter.maxPrice = priceRange.max;
+  }
+
+  if (typeof categoryId === "number") {
+    filter.categoryId = [categoryId];
+  }
 
   Object.keys(filter).forEach((key) => {
     if (filter[key] === undefined || filter[key] === null) {
@@ -146,9 +155,10 @@ export const ProductList = ({
             )
         : true;
 
-      const matchesCategory = categoryId
-        ? product.category?.id === categoryId
-        : true;
+      const matchesCategory =
+        typeof categoryId === "number"
+          ? product.category?.id === categoryId
+          : true;
 
       const productPrice = resolveProductPrice(product);
 
