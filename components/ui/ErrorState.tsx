@@ -7,7 +7,7 @@ export const ErrorState = ({
   message = "Bir şeyler ters gitti.",
   onRetry,
 }: ErrorStateProps) => (
-  <div className="flex flex-col items-center gap-4 rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-red-700">
+  <div className="flex flex-col items-center gap-4 rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-red-700 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-200">
     <p className="text-sm font-medium">{message}</p>
     {onRetry ? (
       <button

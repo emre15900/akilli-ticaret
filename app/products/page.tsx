@@ -23,14 +23,33 @@ export default function ProductsPage() {
   >([]);
   const handleCategoryOptions = useCallback(
     (incoming: { id: number; label: string }[]) => {
+      if (!incoming.length) {
+        return;
+      }
       setCategoryOptions((current) => {
-        if (
-          current.length === incoming.length &&
-          current.every((item, index) => item.id === incoming[index]?.id)
-        ) {
-          return current;
-        }
-        return incoming;
+        const orderAwareMap = new Map<number, string>();
+        current.forEach((item) => {
+          orderAwareMap.set(item.id, item.label);
+        });
+        incoming.forEach((item) => {
+          orderAwareMap.set(item.id, item.label);
+        });
+
+        const merged = Array.from(orderAwareMap.entries())
+          .map(([id, label]) => ({ id, label }))
+          .sort((a, b) =>
+            a.label.localeCompare(b.label, "tr", { sensitivity: "base" }),
+          );
+
+        const isSameAsCurrent =
+          merged.length === current.length &&
+          merged.every(
+            (item, index) =>
+              item.id === current[index]?.id &&
+              item.label === current[index]?.label,
+          );
+
+        return isSameAsCurrent ? current : merged;
       });
     },
     [],
@@ -41,8 +60,7 @@ export default function ProductsPage() {
   const inStockOnly = searchParams.get("inStock") === "true";
   const minPrice = parseNumberParam(searchParams.get("min"));
   const maxPrice = parseNumberParam(searchParams.get("max"));
-  const mode =
-    searchParams.get("mode") === "paginated" ? "paginated" : "infinite";
+  const mode: "infinite" = "infinite";
   const page = parseNumberParam(searchParams.get("page")) ?? 1;
 
   const priceRange: PriceRange = useMemo(
@@ -76,24 +94,31 @@ export default function ProductsPage() {
     });
   };
 
+  const formatNumberParam = (value?: number) =>
+    value === undefined || value === null ? null : String(value);
+
   const handleFiltersChange = (payload: {
     categoryId?: number;
     inStockOnly?: boolean;
     priceRange?: PriceRange;
   }) => {
-    const nextCategory =
-      payload.categoryId !== undefined
-        ? payload.categoryId
-        : selectedCategoryId;
+    const hasCategoryUpdate = Object.prototype.hasOwnProperty.call(
+      payload,
+      "categoryId",
+    );
+    const nextCategory = hasCategoryUpdate
+      ? payload.categoryId
+      : selectedCategoryId;
     const nextInStock =
       payload.inStockOnly !== undefined ? payload.inStockOnly : inStockOnly;
     const nextPriceRange = payload.priceRange ?? priceRange;
 
     updateQueryParams({
-      category: nextCategory ? String(nextCategory) : null,
+      category:
+        typeof nextCategory === "number" ? String(nextCategory) : null,
       inStock: nextInStock ? "true" : null,
-      min: nextPriceRange?.min ? String(nextPriceRange.min) : null,
-      max: nextPriceRange?.max ? String(nextPriceRange.max) : null,
+      min: formatNumberParam(nextPriceRange?.min),
+      max: formatNumberParam(nextPriceRange?.max),
       page: "1",
     });
   };
@@ -104,13 +129,7 @@ export default function ProductsPage() {
       inStock: null,
       min: null,
       max: null,
-      page: "1",
-    });
-  };
-
-  const handleModeToggle = () => {
-    updateQueryParams({
-      mode: mode === "infinite" ? "paginated" : "infinite",
+      q: null,
       page: "1",
     });
   };
@@ -127,13 +146,6 @@ export default function ProductsPage() {
         <div className="flex-1">
           <SearchBar initialValue={queryValue} onSearch={handleSearch} />
         </div>
-        <button
-          type="button"
-          onClick={handleModeToggle}
-          className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand"
-        >
-          Mod: {mode === "infinite" ? "Sonsuz Kaydırma" : "Sayfalamalı"}
-        </button>
       </div>
 
       <FiltersPanel
