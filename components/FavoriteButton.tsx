@@ -32,8 +32,8 @@ export const FavoriteButton = ({
 
   const idlePalette =
     variant === "icon"
-      ? "border border-slate-200 bg-white text-slate-600 hover:border-rose-300 hover:text-rose-600 shadow-sm"
-      : "border border-slate-200 bg-white text-slate-600 hover:border-rose-300 hover:text-rose-600";
+      ? "border border-slate-200 bg-white text-slate-600 hover:border-rose-300 hover:text-rose-600 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-rose-400"
+      : "border border-slate-200 bg-white text-slate-600 hover:border-rose-300 hover:text-rose-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-rose-400";
 
   const activePalette =
     variant === "icon"

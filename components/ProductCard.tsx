@@ -50,8 +50,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     "/placeholder-product.svg";
 
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-4 shadow-card transition hover:-translate-y-1 hover:shadow-lg">
-      <Link href={`/products/${product.id}`} className="relative mb-4 block h-48 w-full overflow-hidden rounded-xl bg-slate-50">
+    <article className="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-4 shadow-card transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+      <Link href={`/products/${product.id}`} className="relative mb-4 block h-48 w-full overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-800">
         <Image
           src={imageUrl}
           alt={product.name}
@@ -64,12 +64,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-xs uppercase tracking-wide text-slate-400">
+            <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
               {product.brand?.mname ?? "Marka"}
             </p>
             <Link
               href={`/products/${product.id}`}
-              className="line-clamp-2 text-base font-semibold text-slate-900"
+              className="line-clamp-2 text-base font-semibold text-slate-900 dark:text-slate-100"
               title={product.name}
             >
               {product.name}
@@ -81,7 +81,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             className="shrink-0"
           />
         </div>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Stok:{" "}
           <span className="font-semibold text-slate-900">
             {stock}
@@ -98,7 +98,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               </span>
             </div>
           )}
-          <p className="text-lg font-bold text-slate-900">{formattedPrice}</p>
+          <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{formattedPrice}</p>
         </div>
         <div className="mt-auto flex items-center justify-between pt-4">
           <Link

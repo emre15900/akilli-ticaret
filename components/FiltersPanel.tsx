@@ -91,19 +91,19 @@ export const FiltersPanel = ({
   }, [debouncedMinPrice, debouncedMaxPrice, emitPriceRange]);
 
   return (
-    <section className="rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-white to-slate-50 p-5 shadow-lg shadow-slate-100">
+    <section className="rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-white to-slate-50 p-5 shadow-lg shadow-slate-100 transition-colors dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 dark:shadow-slate-900/40">
       <div className="flex flex-col gap-3 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             Akıllı filtreler
           </p>
-          <h3 className="text-lg font-bold text-slate-900">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
             Aradığın ürünü hızla bul
           </h3>
         </div>
         <button
           type="button"
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-white"
           onClick={() => {
             setMinPrice("");
             setMaxPrice("");
@@ -121,7 +121,7 @@ export const FiltersPanel = ({
           <div className="relative">
             <FiTag className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base text-slate-400" />
             <select
-              className="w-full appearance-none rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-10 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="w-full appearance-none rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-10 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               value={selectedCategoryId?.toString() ?? ""}
               onChange={(event) =>
                 onChange({
@@ -142,7 +142,7 @@ export const FiltersPanel = ({
           </div>
         </label>
 
-        <div className="col-span-2 flex flex-col gap-3 text-sm font-semibold text-slate-700 md:col-span-1">
+        <div className="col-span-2 flex flex-col gap-3 text-sm font-semibold text-slate-700 dark:text-slate-100 md:col-span-1">
           Stok Durumu
           <button
             type="button"
@@ -151,7 +151,7 @@ export const FiltersPanel = ({
               "flex items-center gap-3 rounded-2xl border px-4 py-2 text-sm font-medium transition",
               inStockOnly
                 ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm"
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300",
+                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-500",
             )}
             onClick={() =>
               onChange({
@@ -168,7 +168,7 @@ export const FiltersPanel = ({
           </button>
         </div>
 
-        <div className="col-span-2 grid gap-3 text-sm font-semibold text-slate-700 md:col-span-2 md:grid-cols-2">
+        <div className="col-span-2 grid gap-3 text-sm font-semibold text-slate-700 dark:text-slate-100 md:col-span-2 md:grid-cols-2">
           <label className="flex flex-col gap-2">
             Min. fiyat
             <div className="relative">
@@ -179,7 +179,7 @@ export const FiltersPanel = ({
                 placeholder="0"
                 value={minPrice}
                 onChange={(event) => setMinPrice(event.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               />
             </div>
           </label>
@@ -194,7 +194,7 @@ export const FiltersPanel = ({
                 placeholder="1000"
                 value={maxPrice}
                 onChange={(event) => setMaxPrice(event.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-700 shadow-inner focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               />
             </div>
           </label>

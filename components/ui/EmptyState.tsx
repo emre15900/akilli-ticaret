@@ -11,9 +11,9 @@ export const EmptyState = ({
   ctaLabel,
   onCtaClick,
 }: EmptyStateProps) => (
-  <div className="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-    <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-    <p className="max-w-sm text-sm text-slate-500">{description}</p>
+  <div className="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+    <p className="max-w-sm text-sm text-slate-500 dark:text-slate-400">{description}</p>
     {ctaLabel && onCtaClick ? (
       <button
         type="button"

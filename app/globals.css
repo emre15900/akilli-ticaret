@@ -15,7 +15,7 @@
   }
 
   body {
-    @apply bg-surface text-slate-900 antialiased;
+    @apply bg-surface text-slate-900 antialiased transition-colors dark:bg-slate-950 dark:text-slate-100;
   }
 
   ::selection {
@@ -36,10 +36,22 @@
     color: #0f172a;
   }
 
+  .dark select option {
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+
   select option:hover,
   select option:focus,
   select option:checked {
     background-color: #fee2e2;
     color: #b91c1c;
+  }
+
+  .dark select option:hover,
+  .dark select option:focus,
+  .dark select option:checked {
+    background-color: #1f2937;
+    color: #facc15;
   }
 }

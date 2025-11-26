@@ -141,9 +141,9 @@ export default function ProductDetailPage() {
     }
   })();
   return (
-    <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:grid-cols-2">
+    <section className="grid gap-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-2">
       <div className="space-y-4">
-        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50">
+        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-800">
           {heroImage ? (
             <Image
               src={heroImage}
@@ -169,11 +169,11 @@ export default function ProductDetailPage() {
       <div className="space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm uppercase tracking-wide text-slate-400">
+            <p className="text-sm uppercase tracking-wide text-slate-400 dark:text-slate-500">
               {product.brand?.mname}
             </p>
-            <h1 className="text-2xl font-bold text-slate-900">{product.name}</h1>
-            <p className="text-sm text-slate-500">Kod: {product.stockCode}</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{product.name}</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Kod: {product.stockCode}</p>
           </div>
           <FavoriteButton
             productId={product.id}
@@ -182,30 +182,30 @@ export default function ProductDetailPage() {
           />
         </div>
 
-        <div className="space-y-2 rounded-2xl bg-slate-50 p-4">
-          <p className="text-sm font-medium text-slate-500">Fiyat</p>
-          <p className="text-3xl font-black text-slate-900">{formattedPrice}</p>
-          <p className="text-sm text-slate-500">
+        <div className="space-y-2 rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fiyat</p>
+          <p className="text-3xl font-black text-slate-900 dark:text-slate-100">{formattedPrice}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Stok:{" "}
-            <span className="font-semibold text-slate-900">
+            <span className="font-semibold text-slate-900 dark:text-slate-100">
               {totalStock}
             </span>
             {selectedVariantStock !== undefined &&
               selectedVariantStock !== totalStock && (
-                <span className="ml-2 text-xs font-medium text-slate-400">
+                <span className="ml-2 text-xs font-medium text-slate-400 dark:text-slate-500">
                   (Seçili varyant: {selectedVariantStock})
                 </span>
               )}
           </p>
         </div>
 
-        <div className="space-y-2 rounded-2xl border border-slate-100 p-4">
-          <p className="text-sm font-semibold text-slate-700">Seçili varyant</p>
-          <ul className="text-sm text-slate-600">
+        <div className="space-y-2 rounded-2xl border border-slate-100 p-4 dark:border-slate-800">
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-100">Seçili varyant</p>
+          <ul className="text-sm text-slate-600 dark:text-slate-200">
             {selectedProperty?.variantValues?.map((value) => (
               <li key={`${value.key}-${value.value}`}>
                 {value.key}:{" "}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-slate-900 dark:text-slate-100">
                   {value.value}
                 </span>
               </li>

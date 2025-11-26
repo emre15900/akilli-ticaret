@@ -36,8 +36,8 @@ export const VariantSelector = ({
   }
 
   return (
-    <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
-      <p className="text-sm font-semibold text-slate-700">Varyant Seçimi</p>
+    <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+      <p className="text-sm font-semibold text-slate-700 dark:text-slate-100">Varyant Seçimi</p>
       <div className="flex flex-wrap gap-2">
         {properties.map((property) => {
           const isActive = property.barcode === selectedBarcode;
