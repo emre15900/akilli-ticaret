@@ -1,12 +1,14 @@
+import Skeleton from "react-loading-skeleton";
+
 export const SkeletonCard = () => (
-  <div className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-    <div className="h-48 w-full animate-pulse rounded-xl bg-slate-100" />
-    <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-100" />
-    <div className="h-4 w-1/2 animate-pulse rounded-full bg-slate-100" />
+  <article className="flex h-full flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-card dark:border-slate-800 dark:bg-slate-900">
+    <Skeleton height={190} borderRadius="1rem" />
+    <Skeleton height={18} width="80%" />
+    <Skeleton height={14} width="60%" />
     <div className="mt-auto flex items-center justify-between">
-      <div className="h-6 w-1/3 animate-pulse rounded-full bg-slate-100" />
-      <div className="h-10 w-10 animate-pulse rounded-full bg-slate-100" />
+      <Skeleton height={28} width="40%" />
+      <Skeleton circle height={44} width={44} />
     </div>
-  </div>
+  </article>
 );
 

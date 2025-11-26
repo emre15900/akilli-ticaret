@@ -69,6 +69,7 @@ export interface ProductListResponse {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
   products: Product[];
+  __typename?: string;
 }
 
 export interface FavoriteProductSummary {

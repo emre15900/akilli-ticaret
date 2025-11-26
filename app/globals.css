@@ -1,9 +1,21 @@
+@import "react-toastify/dist/ReactToastify.css";
+@import "react-loading-skeleton/dist/skeleton.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   color-scheme: light;
+  --surface-bg: #f8fafc;
+  --card-bg: #ffffff;
+  --card-text: #0f172a;
+}
+
+html.dark {
+  --surface-bg: #050914;
+  --card-bg: #0f172a;
+  --card-text: #f8fafc;
 }
 
 @layer base {
@@ -12,10 +24,66 @@
   }
 
   body {
-    @apply bg-surface text-slate-900 antialiased;
+    @apply bg-surface text-slate-900 antialiased transition-colors dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-bg: #050914;
+      --card-bg: #0f172a;
+      --card-text: #f8fafc;
+    }
+  }
+
+  .card-surface {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .bg-surface-dynamic {
+    background-color: var(--surface-bg);
+    transition: background-color 0.2s ease;
+  }
+
+  .card-text {
+    color: var(--card-text);
   }
 
   ::selection {
     @apply bg-brand text-white;
+  }
+
+  select {
+    appearance: none;
+    background-image: none;
+  }
+
+  select::-ms-expand {
+    display: none;
+  }
+
+  select option {
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  .dark select option {
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+
+  select option:hover,
+  select option:focus,
+  select option:checked {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .dark select option:hover,
+  .dark select option:focus,
+  .dark select option:checked {
+    background-color: #1f2937;
+    color: #facc15;
   }
 }

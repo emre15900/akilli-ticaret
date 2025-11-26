@@ -8,10 +8,11 @@ import { SkeletonCard } from "./ui/SkeletonCard";
 import { ErrorState } from "./ui/ErrorState";
 import { EmptyState } from "./ui/EmptyState";
 import { GET_PRODUCTS } from "@/lib/graphql/queries";
-import type { PriceRange, Product } from "@/types/product";
+import type { PriceRange, Product, ProductListResponse } from "@/types/product";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useAppDispatch } from "@/store/hooks";
 import { setGlobalError } from "@/store/uiSlice";
+import { resolveProductPrice, resolveProductStock } from "@/utils/productMetrics";
 
 interface ProductListProps {
   search?: string;
@@ -46,11 +47,19 @@ const buildFilterInput = ({
     pageNumber: page ?? 1,
     pageSize: pageSize ?? PAGE_SIZE,
     keyword: search?.trim() || undefined,
-    minPrice: priceRange?.min ?? undefined,
-    maxPrice: priceRange?.max ?? undefined,
-    stockStatus: inStockOnly ? 1 : undefined,
-    categoryId: categoryId ? [categoryId] : undefined,
   };
+
+  if (priceRange?.min !== undefined && priceRange.min !== null) {
+    filter.minPrice = priceRange.min;
+  }
+
+  if (priceRange?.max !== undefined && priceRange.max !== null) {
+    filter.maxPrice = priceRange.max;
+  }
+
+  if (typeof categoryId === "number") {
+    filter.categoryId = [categoryId];
+  }
 
   Object.keys(filter).forEach((key) => {
     if (filter[key] === undefined || filter[key] === null) {
@@ -118,16 +127,70 @@ export const ProductList = ({
     [search, categoryId, inStockOnly, priceRange, mode, page, pageSize],
   );
 
-  const { data, loading, error, fetchMore, refetch, networkStatus } = useQuery(
-    GET_PRODUCTS,
-    {
-      variables: { filter: filterInput },
-      notifyOnNetworkStatusChange: true,
-    },
-  );
+  const { data, loading, error, fetchMore, refetch, networkStatus } =
+    useQuery<{ productsByFilter: ProductListResponse }, { filter: ReturnType<typeof buildFilterInput> }>(
+      GET_PRODUCTS,
+      {
+        variables: { filter: filterInput },
+        notifyOnNetworkStatusChange: true,
+      },
+    );
 
   const listResponse = data?.productsByFilter;
-  const products = listResponse?.products ?? [];
+  const products = useMemo<Product[]>(
+    () => listResponse?.products ?? [],
+    [listResponse?.products],
+  );
+  const normalizedSearch = search?.trim().toLowerCase() ?? "";
+  const filteredProducts = useMemo(() => {
+    if (!products.length) {
+      return products;
+    }
+
+    return products.filter((product: Product) => {
+      const matchesSearch = normalizedSearch
+        ? [product.name, product.stockCode, product.brand?.mname]
+            .filter(Boolean)
+            .some((value) =>
+              String(value).toLowerCase().includes(normalizedSearch),
+            )
+        : true;
+
+      const matchesCategory =
+        typeof categoryId === "number"
+          ? product.category?.id === categoryId
+          : true;
+
+      const productPrice = resolveProductPrice(product);
+
+      const matchesMin =
+        typeof priceRange?.min === "number"
+          ? productPrice >= priceRange.min
+          : true;
+      const matchesMax =
+        typeof priceRange?.max === "number"
+          ? productPrice <= priceRange.max
+          : true;
+
+      const productStock = resolveProductStock(product);
+      const matchesStock = inStockOnly ? productStock > 0 : true;
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesMin &&
+        matchesMax &&
+        matchesStock
+      );
+    });
+  }, [
+    products,
+    normalizedSearch,
+    categoryId,
+    inStockOnly,
+    priceRange?.min,
+    priceRange?.max,
+  ]);
   const hasMore = Boolean(
     mode === "infinite" && listResponse?.hasNextPage && !loading,
   );
@@ -170,12 +233,11 @@ export const ProductList = ({
   });
 
   useEffect(() => {
-    const currentProducts = listResponse?.products ?? [];
-    if (!onCategoriesChange || !currentProducts.length) {
+    if (!onCategoriesChange || !products.length) {
       return;
     }
     const uniqueMap = new Map<number, string>();
-    currentProducts.forEach((product: Product) => {
+    products.forEach((product: Product) => {
       if (product.category?.id && product.category?.categoryName) {
         uniqueMap.set(product.category.id, product.category.categoryName);
       }
@@ -187,7 +249,7 @@ export const ProductList = ({
         label,
       })),
     );
-  }, [listResponse?.products, onCategoriesChange]);
+  }, [products, onCategoriesChange]);
 
   useEffect(() => {
     if (error) {
@@ -216,16 +278,24 @@ export const ProductList = ({
     );
   }
 
-  if (!products.length) {
+  if (!loading && !filteredProducts.length) {
     return <EmptyState title="Ürün bulunamadı" />;
   }
+
+  const renderSkeletons = (count: number) =>
+    Array.from({ length: count }).map((_, index) => (
+      <SkeletonCard key={`skeleton-${index}`} />
+    ));
+
+  const isFetchingMore = networkStatus === NetworkStatus.fetchMore;
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
+        {isFetchingMore && renderSkeletons(3)}
       </div>
 
       {mode === "infinite" ? (
