@@ -190,9 +190,8 @@ export default function ProductDetailPage() {
           <FavoriteButton
             productId={product.id}
             summary={buildFavoriteSummary(product)}
-            variant="pill"
-            fullWidthOnMobile
-            hideLabel
+            variant="icon"
+            className="h-12 w-12 shrink-0"
           />
         </div>
 
