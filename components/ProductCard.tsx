@@ -83,7 +83,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Stok:{" "}
-          <span className="font-semibold text-slate-900">
+          <span className="font-semibold text-slate-900 dark:text-slate-100">
             {stock}
           </span>
         </p>

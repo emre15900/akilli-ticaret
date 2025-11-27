@@ -11,7 +11,7 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { VariantSelector } from "@/components/VariantSelector";
 import { getImageForBarcode } from "@/utils/barcodeMatching";
 import { FavoriteButton } from "@/components/FavoriteButton";
-import type { Product } from "@/types/product";
+import type { Product, ProductListResponse } from "@/types/product";
 import { buildFavoriteSummary } from "@/types/product";
 import { normalizeCurrency } from "@/utils/currency";
 import {
@@ -20,19 +20,33 @@ import {
   resolveProductStock,
 } from "@/utils/productMetrics";
 
+interface ProductDetailsQueryResult {
+  productDetails?: Product | null;
+}
+
+interface ProductsByFilterQueryResult {
+  productsByFilter?: ProductListResponse | null;
+}
+
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const productId = Number(params.id);
-  const { data, loading, error, refetch } = useQuery(GET_PRODUCT_DETAILS, {
-    variables: { productId },
-    skip: Number.isNaN(productId),
-  });
-  const product: Product | undefined = data?.productDetails;
+  const { data, loading, error, refetch } = useQuery<ProductDetailsQueryResult>(
+    GET_PRODUCT_DETAILS,
+    {
+      variables: { productId },
+      skip: Number.isNaN(productId),
+    },
+  );
+  const product: Product | undefined = data?.productDetails ?? undefined;
 
-  const { data: fallbackImagesData } = useQuery(GET_PRODUCTS, {
-    variables: { filter: { productId } },
-    skip: Number.isNaN(productId) || Boolean(product?.productImages?.length),
-  });
+  const { data: fallbackImagesData } = useQuery<ProductsByFilterQueryResult>(
+    GET_PRODUCTS,
+    {
+      variables: { filter: { productId } },
+      skip: Number.isNaN(productId) || Boolean(product?.productImages?.length),
+    },
+  );
 
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
     null,

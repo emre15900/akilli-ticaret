@@ -8,7 +8,7 @@ import { SkeletonCard } from "./ui/SkeletonCard";
 import { ErrorState } from "./ui/ErrorState";
 import { EmptyState } from "./ui/EmptyState";
 import { GET_PRODUCTS } from "@/lib/graphql/queries";
-import type { PriceRange, Product } from "@/types/product";
+import type { PriceRange, Product, ProductListResponse } from "@/types/product";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useAppDispatch } from "@/store/hooks";
 import { setGlobalError } from "@/store/uiSlice";
@@ -24,6 +24,10 @@ interface ProductListProps {
   pageSize?: number;
   onPageChange?: (page: number) => void;
   onCategoriesChange?: (categories: { id: number; label: string }[]) => void;
+}
+
+interface ProductsQueryResult {
+  productsByFilter?: ProductListResponse | null;
 }
 
 const PAGE_SIZE = 12;
@@ -127,13 +131,17 @@ export const ProductList = ({
     [search, categoryId, inStockOnly, priceRange, mode, page, pageSize],
   );
 
-  const { data, loading, error, fetchMore, refetch, networkStatus } = useQuery(
-    GET_PRODUCTS,
-    {
-      variables: { filter: filterInput },
-      notifyOnNetworkStatusChange: true,
-    },
-  );
+  const {
+    data,
+    loading,
+    error,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery<ProductsQueryResult>(GET_PRODUCTS, {
+    variables: { filter: filterInput },
+    notifyOnNetworkStatusChange: true,
+  });
 
   const listResponse = data?.productsByFilter;
   const products = useMemo(
@@ -211,12 +219,15 @@ export const ProductList = ({
           return prev;
         }
 
+        if (!prev?.productsByFilter) {
+          return fetchMoreResult;
+        }
+
         return {
           productsByFilter: {
-            __typename: prev?.productsByFilter.__typename,
             ...fetchMoreResult.productsByFilter,
             products: [
-              ...(prev?.productsByFilter?.products ?? []),
+              ...(prev.productsByFilter.products ?? []),
               ...(fetchMoreResult.productsByFilter.products ?? []),
             ],
           },
