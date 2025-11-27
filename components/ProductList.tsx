@@ -131,20 +131,14 @@ export const ProductList = ({
     [search, categoryId, inStockOnly, priceRange, mode, page, pageSize],
   );
 
-  const {
-    data,
-    loading,
-    error,
-    fetchMore,
-    refetch,
-    networkStatus,
-  } = useQuery<ProductsQueryResult>(GET_PRODUCTS, {
-    variables: { filter: filterInput },
-    notifyOnNetworkStatusChange: true,
-  });
+  const { data, loading, error, fetchMore, refetch, networkStatus } =
+    useQuery<ProductsQueryResult>(GET_PRODUCTS, {
+      variables: { filter: filterInput },
+      notifyOnNetworkStatusChange: true,
+    });
 
   const listResponse = data?.productsByFilter;
-  const products = useMemo(
+  const products = useMemo<Product[]>(
     () => listResponse?.products ?? [],
     [listResponse?.products],
   );
@@ -154,7 +148,7 @@ export const ProductList = ({
       return products;
     }
 
-    return products.filter((product) => {
+    return products.filter((product: Product) => {
       const matchesSearch = normalizedSearch
         ? [product.name, product.stockCode, product.brand?.mname]
             .filter(Boolean)

@@ -34,8 +34,8 @@ export default function ProductDetailPage() {
   const { data, loading, error, refetch } = useQuery<ProductDetailsQueryResult>(
     GET_PRODUCT_DETAILS,
     {
-      variables: { productId },
-      skip: Number.isNaN(productId),
+    variables: { productId },
+    skip: Number.isNaN(productId),
     },
   );
   const product: Product | undefined = data?.productDetails ?? undefined;
@@ -43,8 +43,8 @@ export default function ProductDetailPage() {
   const { data: fallbackImagesData } = useQuery<ProductsByFilterQueryResult>(
     GET_PRODUCTS,
     {
-      variables: { filter: { productId } },
-      skip: Number.isNaN(productId) || Boolean(product?.productImages?.length),
+    variables: { filter: { productId } },
+    skip: Number.isNaN(productId) || Boolean(product?.productImages?.length),
     },
   );
 
