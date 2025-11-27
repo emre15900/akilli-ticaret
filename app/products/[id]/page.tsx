@@ -20,25 +20,33 @@ import {
   resolveProductStock,
 } from "@/utils/productMetrics";
 
+interface ProductDetailsQueryResult {
+  productDetails?: Product | null;
+}
+
+interface ProductsByFilterQueryResult {
+  productsByFilter?: ProductListResponse | null;
+}
+
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const productId = Number(params.id);
-  const { data, loading, error, refetch } = useQuery<
-    { productDetails: Product },
-    { productId: number }
-  >(GET_PRODUCT_DETAILS, {
+  const { data, loading, error, refetch } = useQuery<ProductDetailsQueryResult>(
+    GET_PRODUCT_DETAILS,
+    {
     variables: { productId },
     skip: Number.isNaN(productId),
-  });
-  const product: Product | undefined = data?.productDetails;
+    },
+  );
+  const product: Product | undefined = data?.productDetails ?? undefined;
 
-  const { data: fallbackImagesData } = useQuery<
-    { productsByFilter: ProductListResponse },
-    { filter: { productId: number } }
-  >(GET_PRODUCTS, {
+  const { data: fallbackImagesData } = useQuery<ProductsByFilterQueryResult>(
+    GET_PRODUCTS,
+    {
     variables: { filter: { productId } },
     skip: Number.isNaN(productId) || Boolean(product?.productImages?.length),
-  });
+    },
+  );
 
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
     null,

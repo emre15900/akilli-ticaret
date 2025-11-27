@@ -1,4 +1,5 @@
 import { ApolloClient, HttpLink, InMemoryCache, from } from "@apollo/client";
+import { CombinedGraphQLErrors } from "@apollo/client/errors";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 
@@ -20,15 +21,15 @@ const authLink = setContext((_, { headers }) => ({
   },
 }));
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    graphQLErrors.forEach(({ message }) => {
+const errorLink = onError(({ error }) => {
+  if (CombinedGraphQLErrors.is(error)) {
+    error.errors.forEach(({ message }) => {
       console.error(`[GraphQL error]: ${message}`);
     });
+    return;
   }
-  if (networkError) {
-    console.error(`[Network error]: ${networkError}`);
-  }
+
+  console.error(`[Network error]: ${error}`);
 });
 
 export const apolloClient = new ApolloClient({

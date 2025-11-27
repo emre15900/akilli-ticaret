@@ -26,6 +26,10 @@ interface ProductListProps {
   onCategoriesChange?: (categories: { id: number; label: string }[]) => void;
 }
 
+interface ProductsQueryResult {
+  productsByFilter?: ProductListResponse | null;
+}
+
 const PAGE_SIZE = 12;
 
 const buildFilterInput = ({
@@ -128,13 +132,10 @@ export const ProductList = ({
   );
 
   const { data, loading, error, fetchMore, refetch, networkStatus } =
-    useQuery<{ productsByFilter: ProductListResponse }, { filter: ReturnType<typeof buildFilterInput> }>(
-      GET_PRODUCTS,
-      {
-        variables: { filter: filterInput },
-        notifyOnNetworkStatusChange: true,
-      },
-    );
+    useQuery<ProductsQueryResult>(GET_PRODUCTS, {
+      variables: { filter: filterInput },
+      notifyOnNetworkStatusChange: true,
+    });
 
   const listResponse = data?.productsByFilter;
   const products = useMemo<Product[]>(
@@ -212,12 +213,15 @@ export const ProductList = ({
           return prev;
         }
 
+        if (!prev?.productsByFilter) {
+          return fetchMoreResult;
+        }
+
         return {
           productsByFilter: {
-            __typename: prev?.productsByFilter.__typename,
             ...fetchMoreResult.productsByFilter,
             products: [
-              ...(prev?.productsByFilter?.products ?? []),
+              ...(prev.productsByFilter.products ?? []),
               ...(fetchMoreResult.productsByFilter.products ?? []),
             ],
           },

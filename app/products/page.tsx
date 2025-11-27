@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
 import { FiltersPanel } from "@/components/FiltersPanel";
@@ -16,6 +16,14 @@ const parseNumberParam = (value: string | null) => {
 };
 
 export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsPageFallback />}>
+      <ProductsPageContent />
+    </Suspense>
+  );
+}
+
+function ProductsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [categoryOptions, setCategoryOptions] = useState<
@@ -170,4 +178,17 @@ export default function ProductsPage() {
     </section>
   );
 }
+
+const ProductsPageFallback = () => (
+  <section className="space-y-4">
+    <div className="h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 animate-pulse" />
+    <div className="h-24 rounded-2xl border border-slate-100 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+      <div className="mb-2 h-4 w-1/3 rounded bg-slate-100 dark:bg-slate-800 animate-pulse" />
+      <div className="space-y-2">
+        <div className="h-3 rounded bg-slate-100 dark:bg-slate-800 animate-pulse" />
+        <div className="h-3 w-2/3 rounded bg-slate-100 dark:bg-slate-800 animate-pulse" />
+      </div>
+    </div>
+  </section>
+);
 
